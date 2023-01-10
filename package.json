@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon src/index.js",
     "start": "node src/index.js",
+    "start:dev": "NODE_ENV=development nodemon src/index.js",
     "lint": "eslint",
     "seed:all": "sequelize-cli db:seed:all",
     "seed:undo": "sequelize-cli db:seed:undo:all",
