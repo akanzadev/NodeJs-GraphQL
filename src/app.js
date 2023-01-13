@@ -1,13 +1,18 @@
-
 const express = require('express');
 const cors = require('cors');
 
 const routerApi = require('./routes');
 const { checkApiKey } = require('./middlewares/auth.handler');
 
-const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require('./middlewares/error.handler');
+const {
+  logErrors,
+  errorHandler,
+  boomErrorHandler,
+  ormErrorHandler,
+} = require('./middlewares/error.handler');
+const useGraphQL = require('./graphql');
 
-const createApp = () => {
+const createApp = async () => {
   const app = express();
 
   app.use(express.json());
@@ -24,12 +29,13 @@ const createApp = () => {
   });
 
   routerApi(app);
+  await useGraphQL(app);
 
   app.use(logErrors);
   app.use(ormErrorHandler);
   app.use(boomErrorHandler);
   app.use(errorHandler);
   return app;
-}
+};
 
 module.exports = createApp;
