@@ -1,34 +1,34 @@
-const getProduct = async (parent, args, context, info) => {
+const ProductsService = require('../services/product.service');
+const service = new ProductsService();
+
+const getProduct = async (parent, { args }, context, info) => {
   const { id } = args;
-  // const { db } = context;
-  // const product = await db.Product.findByPk(id);
-  // return product;
-  return {
-    id: id,
-    name: 'Product 1',
-    price: 1.1,
-    description: 'Product 1 description',
-    image: 'https://picsum.photos/200/300',
-    createdAt: new Date().toISOString(),
-  };
+  const product = await service.findOne(id);
+  return product;
 };
 
 const getProducts = async (parent, args, context, info) => {
-  const { db } = context;
-  const products = await db.Product.findAll();
+  const products = await service.find({});
   return products;
 };
 
+/* mutation createProduct{
+  product: addProduct ( dto: {
+    name: "test1",
+    description: "test1-desc",
+    price: 124,
+    image: "test1-img",
+    categoryId: 1
+  }){
+    id
+    name
+    description
+  }
+} */
 const addProduct = async (parent, args, context, info) => {
-  const { db } = context;
-  const { name, price, description, image } = args;
-  const product = await db.Product.create({
-    name,
-    price,
-    description,
-    image,
-  });
-  return product;
+  const { dto } = args;
+  const newProduct = await service.create(dto);
+  return newProduct;
 };
 
 module.exports = {
