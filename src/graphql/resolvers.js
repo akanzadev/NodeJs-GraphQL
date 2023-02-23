@@ -1,4 +1,10 @@
-const { getProduct, getProducts, addProduct } = require('./product.resolver');
+const {
+  getProduct,
+  getProducts,
+  addProduct,
+  deleteProduct,
+  updateProduct,
+} = require('./product.resolver');
 
 const resolvers = {
   Query: {
@@ -18,6 +24,8 @@ const resolvers = {
   Mutation: {
     // Products
     addProduct,
+    updateProduct,
+    deleteProduct,
   },
 };
 

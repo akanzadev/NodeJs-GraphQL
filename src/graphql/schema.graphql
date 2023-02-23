@@ -12,7 +12,9 @@ type Query {
 }
 
 type Mutation {
-  addProduct(dto: CreateProductDto!): Product!
+  addProduct(dto: CreateProductDto!): Product
+  updateProduct(id: ID!, dto: UpdateProductDto!): Product
+  deleteProduct(id: ID!): ID
 }
 
 type Product {
@@ -22,6 +24,14 @@ type Product {
   description: String!
   image: String!
   createdAt: String!
+  category: Category!
+  categoryId: ID!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  image: String!
 }
 
 input CreateProductDto {
@@ -30,4 +40,12 @@ input CreateProductDto {
   description: String!
   image: String!
   categoryId: ID!
+}
+
+input UpdateProductDto {
+  name: String
+  price: Int
+  description: String
+  image: String
+  categoryId: ID
 }
