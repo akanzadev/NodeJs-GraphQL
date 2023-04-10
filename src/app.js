@@ -28,8 +28,12 @@ const createApp = async () => {
     res.send('Hola, soy una nueva ruta');
   });
 
+  app.get('/hello', (req, res) => {
+    res.status(200).json({ name: 'Hello world!' });
+  });
+
   routerApi(app);
-  await useGraphQL(app);
+  // await useGraphQL(app);
 
   app.use(logErrors);
   app.use(ormErrorHandler);
