@@ -1,25 +1,19 @@
 const request = require('supertest');
-// const express = require('express');
 const createApp = require('../src/app');
+const { config } = require('../src/config/config');
 
 describe('GET /hello', () => {
   let app = null;
   let server = null;
   let api = null;
 
-  beforeEach(() => {
-    // app = express();
+  beforeAll(() => {
     app = createApp();
     server = app.listen(3000);
-    app.get('/hello', (req, res) => {
-      res.status(200).json({ name: 'Hello world!' });
-    });
-
-    app.listen(3000);
     api = request(app);
   });
 
-  it('should return Hello world!', async () => {
+  test('should return Hello world!', async () => {
     const response = await api.get('/hello');
     expect(response).toBeTruthy();
     expect(response.status).toBe(200);
@@ -29,7 +23,31 @@ describe('GET /hello', () => {
     );
   });
 
-  afterEach(() => {
+  describe('GET /nueva-ruta', () => {
+    test('should return a 401 Unauthorized', async () => {
+      const response = await api.get('/nueva-ruta');
+      expect(response).toBeTruthy();
+      expect(response.status).toBe(401);
+      expect(response.body).toHaveProperty('message');
+    });
+
+    test('should return 401 Unauthorized with api key invalid', async () => {
+      const { statusCode, body } = await api.get('/nueva-ruta').set({
+        api: '1212',
+      });
+      expect(statusCode).toBe(401);
+      expect(body).toHaveProperty('message');
+    });
+
+    test('should return 200 OK with api key valid', async () => {
+      const { statusCode } = await api.get('/nueva-ruta').set({
+        api: config.apiKey,
+      });
+      expect(statusCode).toBe(200);
+    });
+  });
+
+  afterAll(() => {
     server.close();
   });
 });

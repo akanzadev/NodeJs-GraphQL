@@ -12,7 +12,7 @@ const {
 } = require('./middlewares/error.handler');
 const useGraphQL = require('./graphql');
 
-const createApp = async () => {
+const createApp = () => {
   const app = express();
 
   app.use(express.json());
