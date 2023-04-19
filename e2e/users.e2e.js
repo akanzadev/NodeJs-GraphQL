@@ -49,6 +49,7 @@ describe('Tests for /users path', () => {
       expect(body).toHaveProperty('message');
       expect(body.message).toMatch(/password/);
     });
+
     test('should return a 400 Bad Request with email invalid', async () => {
       // Arrange
       const inputData = { email: '----', password: '123456' };
@@ -60,6 +61,24 @@ describe('Tests for /users path', () => {
       expect(statusCode).toBe(400);
       expect(body).toHaveProperty('message');
       expect(body.message).toMatch(/email/);
+    });
+
+    test('should return a new user', async () => {
+      // Arrange
+      const inputData = { email: 'pepito@gmail.com', password: '123456789' };
+      // Act
+      const { statusCode, body } = await api
+        .post('/api/v1/users')
+        .send(inputData);
+      // Assert
+      expect(statusCode).toBe(201);
+      expect(body).toHaveProperty('id');
+      expect(body).toHaveProperty('email');
+
+      const user = await sequelize.models.User.findByPk(body.id);
+      expect(user).toBeTruthy();
+      expect(user.email).toBe(inputData.email);
+      expect(user.role).toBe('admin');
     });
   });
 
