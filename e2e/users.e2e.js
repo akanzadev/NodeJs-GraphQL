@@ -1,6 +1,8 @@
 const request = require('supertest');
 const createApp = require('../src/app');
 const sequelize = require('../src/db/sequelize');
+const { upSeed } = require('./utils/seed');
+const { downSeed } = require('./utils/seed');
 
 describe('Tests for /users path', () => {
   let app = null;
@@ -8,11 +10,12 @@ describe('Tests for /users path', () => {
   let api = null;
 
   // Se levanta una por archivo y no por cada test
-  beforeAll(() => {
+  beforeAll(async () => {
     // app = express();
     app = createApp();
     server = app.listen(3000);
     api = request(app);
+    await upSeed();
   });
   /* beforeEach(() => {
     // app = express();
@@ -85,7 +88,8 @@ describe('Tests for /users path', () => {
   /* afterEach(() => {
     server.close();
   }); */
-  afterAll(() => {
+  afterAll(async () => {
+    await downSeed();
     server.close();
   });
 });

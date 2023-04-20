@@ -1,16 +1,18 @@
 const request = require('supertest');
 const createApp = require('../src/app');
 const sequelize = require('../src/db/sequelize');
+const { upSeed, downSeed } = require('./utils/seed');
 
 describe('Tests for /auth path', () => {
   let app = null;
   let server = null;
   let api = null;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     app = createApp();
     server = app.listen(3000);
     api = request(app);
+    await upSeed();
   });
 
   describe('GET /users', () => {});
@@ -40,11 +42,11 @@ describe('Tests for /auth path', () => {
     });
     test('should return a 200 OK with email and password valid', async () => {
       const user = await sequelize.models.User.findOne({
-        where: { email: 'akanzaakamaru@gmail.com' },
+        where: { email: 'admin@gmail.com' },
       });
       const inputData = {
-        email: 'akanzaakamaru@gmail.com',
-        password: '123456789',
+        email: 'admin@gmail.com',
+        password: 'admin123',
       };
       const { statusCode, body } = await api
         .post('/api/v1/auth/login')
@@ -58,7 +60,8 @@ describe('Tests for /auth path', () => {
     });
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await downSeed();
     server.close();
   });
 });

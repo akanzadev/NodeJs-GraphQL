@@ -1,6 +1,7 @@
 const request = require('supertest');
 const createApp = require('../src/app');
 const sequelize = require('../src/db/sequelize');
+const { upSeed, downSeed } = require('./utils/seed');
 
 describe('Tests for /users path', () => {
   let app = null;
@@ -8,20 +9,21 @@ describe('Tests for /users path', () => {
   let api = null;
   let accessToken = null;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     app = createApp();
     server = app.listen(3000);
     api = request(app);
+    await upSeed();
   });
 
   describe('GET /my-user admin user', () => {
     beforeAll(async () => {
       const user = await sequelize.models.User.findOne({
-        where: { email: 'akanzaakamaru@gmail.com' },
+        where: { email: 'admin@gmail.com' },
       });
       const inputData = {
         email: user.email,
-        password: '123456789',
+        password: 'admin123',
       };
       const { body: bodyLogin } = await api
         .post('/api/v1/auth/login')
@@ -38,7 +40,7 @@ describe('Tests for /users path', () => {
 
     test('should return a user with token valid', async () => {
       const user = await sequelize.models.User.findOne({
-        where: { email: 'akanzaakamaru@gmail.com' },
+        where: { email: 'admin@gmail.com' },
       });
       const { statusCode, body } = await api
         .get(`/api/v1/profile/my-user`)
@@ -62,7 +64,7 @@ describe('Tests for /users path', () => {
     });
     test('should return a user with token valid', async () => {
       const user = await sequelize.models.User.findOne({
-        where: { email: 'akanzaakamaru@gmail.com' },
+        where: { email: 'admin@gmail.com' },
       });
 
       const { statusCode, body } = await api
@@ -82,7 +84,8 @@ describe('Tests for /users path', () => {
     });
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await downSeed();
     server.close();
   });
 });
