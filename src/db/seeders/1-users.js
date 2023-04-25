@@ -8,17 +8,17 @@ module.exports = {
     }
     return queryInterface.bulkInsert(USER_TABLE, [
       {
-        email: 'admin@mail.com',
+        email: 'admin@gmail.com',
         password: await bcrypt.hash('admin123', 10),
-        role: 'admin',
-        created_at: new Date()
+        role: 'admin123',
+        created_at: new Date(),
       },
       {
-        email: 'customer@mail.com',
+        email: 'customer@gmail.com',
         password: await bcrypt.hash('customer123', 10),
         role: 'customer',
-        created_at: new Date()
-      }
+        created_at: new Date(),
+      },
     ]);
   },
   down: (queryInterface) => {
@@ -26,5 +26,5 @@ module.exports = {
       queryInterface = queryInterface.context;
     }
     return queryInterface.bulkDelete(USER_TABLE, null, {});
-  }
+  },
 };
